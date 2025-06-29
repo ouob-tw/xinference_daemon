@@ -1,0 +1,14 @@
+.archived/
+.env
+config.y[a]ml
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv

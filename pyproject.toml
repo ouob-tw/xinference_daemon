@@ -1,0 +1,14 @@
+[project]
+name = "xinference-daemon"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "apscheduler>=3.11.0",
+    "fastapi>=0.115.14",
+    "loguru>=0.7.3",
+    "python-dotenv>=1.1.1",
+    "pyyaml>=6.0.2",
+    "xinference-client==1.7.0",
+]

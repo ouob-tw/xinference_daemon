@@ -1,0 +1,10 @@
+models:
+  - uid: "r1"
+    name: "bge-reranker-v2-m3"
+    type: "rerank"
+    engine: "vllm"
+
+  - uid: "r2"
+    name: "bge-reranker-v2-m3"
+    type: "rerank"
+    engine: "vllm"
