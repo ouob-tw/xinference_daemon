@@ -11,13 +11,17 @@ load_dotenv(override=True)
 
 XINFERENCE_URL = os.getenv("XINFERENCE_URL")
 CHECK_INTERVAL_SECONDS = int(os.getenv("CHECK_INTERVAL_SECONDS", 300))
-CLIENT = Client(XINFERENCE_URL)
-scheduler = BlockingScheduler()
 
-# todo save logs to file
-
+# Validate environment variables first
 if not XINFERENCE_URL:
     raise ValueError("XINFERENCE_URL environment variable is not set.")
+
+# Initialize client after validation
+CLIENT = Client(XINFERENCE_URL)
+scheduler = BlockingScheduler()
+# todo save logs to file
+# ...
+
 if not Path("config.yaml").exists():
     raise FileNotFoundError(
         "config.yaml file is missing. Please create it with the necessary configuration."
