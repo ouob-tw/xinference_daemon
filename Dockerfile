@@ -47,5 +47,6 @@ COPY . .
 # Expose the port that the application listens on.
 EXPOSE 8000
 
-# Run the application.
-CMD python main.py
+# Use exec form and ensure proper signal handling
+# The --init flag would be better but we can handle it in the command
+CMD ["python", "-u", "main.py"]

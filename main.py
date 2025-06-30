@@ -1,5 +1,6 @@
 import yaml
 import os
+import signal
 from apscheduler.schedulers.blocking import BlockingScheduler
 from xinference_client import RESTfulClient as Client
 from pathlib import Path
@@ -19,6 +20,23 @@ if not XINFERENCE_URL:
 # Initialize client after validation
 CLIENT = Client(XINFERENCE_URL)
 scheduler = BlockingScheduler()
+
+# Signal handler for graceful shutdown
+def signal_handler(signum, frame):
+    logger.info(f"Received signal {signum} ({signal.strsignal(signum)}), shutting down gracefully...")
+    try:
+        scheduler.shutdown(wait=False)
+        logger.info("Scheduler shutdown complete")
+    except Exception as e:
+        logger.warning(f"Error during scheduler shutdown: {e}")
+    finally:
+        logger.info("Exiting process")
+        os._exit(0)  # Force exit without cleanup
+
+# Register signal handlers
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
+
 # todo save logs to file
 # ...
 
@@ -63,4 +81,21 @@ def job1():
 
 
 if __name__ == "__main__":
-    scheduler.start()
+    try:
+        logger.info("Starting xinference daemon...")
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Received shutdown signal, stopping scheduler...")
+        try:
+            scheduler.shutdown(wait=False)
+        except Exception as e:
+            logger.warning(f"Error during scheduler shutdown: {e}")
+        logger.info("Daemon stopped successfully")
+        os._exit(0)
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        try:
+            scheduler.shutdown(wait=False)
+        except Exception:
+            pass
+        os._exit(1)
